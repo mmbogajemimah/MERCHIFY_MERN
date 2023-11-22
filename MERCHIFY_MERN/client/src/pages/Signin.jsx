@@ -35,7 +35,7 @@ export default function SignIn() {
       };
       setLoading(false);
       setError(null);
-      navigate('/home');
+      navigate('/');
       console.log(data);
     } catch (error) {
       setLoading(false);
