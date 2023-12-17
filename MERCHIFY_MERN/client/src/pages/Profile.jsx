@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import { updateUserFailure, updateUserSuccess, updateUserStart, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
+import { updateUserFailure, updateUserSuccess, updateUserStart, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserStart, signOutUserFailure, signOutUserSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { current } from '@reduxjs/toolkit';
 
@@ -97,14 +97,17 @@ export default function Profile() {
 
   const handleSignOut = async () => {
     try {
+      dispatch(signOutUserStart())
       const res = await fetch('/api/auth/signout');
       const data = await res.json();
 
       if (data.success === false) {
+        dispatch(signOutUserFailure(data.message))
         return;
       }
+      dispatch(signOutUserSuccess(data));
     } catch (error) {
-      
+      dispatch(signOutUserFailure(data.message));
     }
   }
 
