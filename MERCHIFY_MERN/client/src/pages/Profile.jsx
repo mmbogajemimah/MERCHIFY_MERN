@@ -15,6 +15,8 @@ export default function Profile() {
   const [ fileUploadError, setFileUploadError ] = useState(false);
   const [ formData, setFormData ] = useState({});
   const [ updateSuccess, setUpdateSuccess ] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
   console.log(filePerc);
@@ -112,6 +114,21 @@ export default function Profile() {
     }
   }
 
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      showListingsError(true);
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>
@@ -150,6 +167,18 @@ export default function Profile() {
       </div>
       <p className='text-red-700 mt-5'>{ error ? error : ""}</p>
       <p className='text-green-700 mt-5'>{ updateSuccess ? "Profile has been updated Successfully" : ""}</p>
+      <button onClick={handleShowListings} className='text-green-700 w-full'>Show Listings</button>
+      <p>{ showListingsError ? 'Error showing listings' : ''}</p>
+      {userListings && 
+        userListings.length > 0 &&
+        userListings.map((listing) => (
+          <div key={listing._id} className=''>
+            <Link to={`/listing/${listing._id}`}>
+              <img src={listing.imageUrls[0]} alt='listing cover' className='h-16 w-16 object-contain rounded-lg'/>
+            </Link>
+          </div>
+        ))
+      }
     </div>
   )
 }
