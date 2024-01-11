@@ -122,6 +122,7 @@ export default function Home() {
               </div>
             )
           }
+          
           {
             offerListings && offerListings.length > 0 && (
               <div className="">
